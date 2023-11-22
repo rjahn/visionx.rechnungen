@@ -1,2 +1,4 @@
-# visionx.rechnungen
-Customized flutter_jvx app for Rechnungen application
+# VisionX Rechnungen
+
+Source Code für den **Artikel Native mobile Applikationen mit Low-Code**.
+
