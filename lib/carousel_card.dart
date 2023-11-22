@@ -70,6 +70,8 @@ class _CarouselCardState extends State<CarouselCard> {
   @override
   void dispose() {
     amountController.dispose();
+    entryDateController.dispose();
+    invoiceDateController.dispose();
     super.dispose();
   }
 
