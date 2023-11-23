@@ -109,7 +109,7 @@ class _CarouselCardState extends State<CarouselCard> {
             color: Theme.of(context).primaryColor,
             elevation: 2.5,
             child: Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: const EdgeInsets.only(top: 8.0, bottom: 8.0, left: 16, right: 16),
               child: Text("${widget.index + 1}/${widget.totalAmount}"),
             ),
           ),
