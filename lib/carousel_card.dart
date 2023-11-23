@@ -119,6 +119,7 @@ class _CarouselCardState extends State<CarouselCard> {
           child: Material(
             elevation: 5.0,
             borderRadius: BorderRadius.circular(20),
+            clipBehavior: Clip.hardEdge,
             child: Stack(
               children: [
                 Positioned.fill(
