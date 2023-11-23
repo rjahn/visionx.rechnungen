@@ -119,7 +119,7 @@ class _CarouselCardState extends State<CarouselCard> {
           child: Material(
             elevation: 5.0,
             borderRadius: BorderRadius.circular(20),
-            clipBehavior: Clip.hardEdge,
+            clipBehavior: Clip.antiAliasWithSaveLayer,
             child: Stack(
               children: [
                 Positioned.fill(
@@ -137,7 +137,7 @@ class _CarouselCardState extends State<CarouselCard> {
                       Expanded(
                         flex: 33,
                         child: ClipPath(
-                          clipper: const ArcClipper(true),
+                          clipper: const ArcClipper(true, 20),
                           child: Container(
                             decoration: BoxDecoration(
                               color: Theme.of(context).primaryColor,
