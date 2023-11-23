@@ -16,9 +16,13 @@ class CarouselCard extends StatefulWidget {
   final DateTime? entryDateTime;
   final DateTime? invoiceDateTime;
   final String? invoiceImage;
+  final int index;
+  final int totalAmount;
 
   const CarouselCard({
     super.key,
+    required this.index,
+    required this.totalAmount,
     this.invoiceAmount,
     this.entryDateTime,
     this.invoiceDateTime,
@@ -35,6 +39,9 @@ class _CarouselCardState extends State<CarouselCard> {
   TextEditingController amountController = TextEditingController();
   TextEditingController entryDateController = TextEditingController();
   TextEditingController invoiceDateController = TextEditingController();
+  NumberFormat numberFormat = NumberFormat("###0.00", IConfigService().getPlatformLocale());
+  DateFormat dateFormat = DateFormat.yMMMd(IConfigService().getPlatformLocale());
+  FocusNode amountFocusNode = FocusNode();
 
   num? invoiceAmount;
   String? invoiceImage;
@@ -53,16 +60,23 @@ class _CarouselCardState extends State<CarouselCard> {
     invoiceDateTime = widget.invoiceDateTime;
 
     if (invoiceAmount != null) {
-      amountController.text = invoiceAmount!.toString();
+      amountController.text = numberFormat.format(invoiceAmount!);
     }
 
     if (entryDateTime != null) {
-      entryDateController.text = DateFormat.yMMMd(IConfigService().getPlatformLocale()).format(entryDateTime!);
+      entryDateController.text = dateFormat.format(entryDateTime!);
     }
 
     if (invoiceDateTime != null) {
-      invoiceDateController.text = DateFormat.yMMMd(IConfigService().getPlatformLocale()).format(invoiceDateTime!);
+      invoiceDateController.text = dateFormat.format(invoiceDateTime!);
     }
+
+    amountFocusNode.addListener(() {
+      if (!amountFocusNode.hasPrimaryFocus) {
+        num amount = double.tryParse(amountController.text.replaceAll(",", ".")) ?? 0.0;
+        amountController.text = numberFormat.format(amount);
+      }
+    });
 
     updatePicture();
   }
@@ -86,53 +100,105 @@ class _CarouselCardState extends State<CarouselCard> {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.only(top: 20, bottom: 20),
-        child: Material(
-          color: Theme.of(context).primaryColor,
-          elevation: 5.0,
-          borderRadius: BorderRadius.circular(20),
-          child: Padding(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(top: 10),
+          child: Material(
+            borderRadius: BorderRadius.circular(20),
+            color: Theme.of(context).primaryColor,
+            elevation: 2.5,
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text("${widget.index + 1}/${widget.totalAmount}"),
+            ),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.only(top: 10),
+          child: Material(
+            elevation: 5.0,
+            borderRadius: BorderRadius.circular(20),
+            child: Stack(
               children: [
-                ConstrainedBox(
-                  constraints: const BoxConstraints(maxHeight: 250),
-                  child: Material(
-                    clipBehavior: Clip.antiAliasWithSaveLayer,
-                    borderRadius: BorderRadius.circular(20),
-                    elevation: 2.5,
-                    child: image,
+                Positioned.fill(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Expanded(
+                        flex: 20,
+                        child: DecoratedBox(
+                          decoration: BoxDecoration(
+                            color: Theme.of(context).colorScheme.background,
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        flex: 33,
+                        child: ClipPath(
+                          clipper: const ArcClipper(true),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: Theme.of(context).primaryColor,
+                              gradient: LinearGradient(
+                                begin: Alignment.bottomCenter,
+                                colors: [
+                                  Theme.of(context).primaryColor,
+                                  JVxColors.lighten(Theme.of(context).primaryColor, 0.2),
+                                ],
+                                end: Alignment.topCenter,
+                              ),
+                            ),
+                            padding: const EdgeInsets.symmetric(horizontal: 32.0),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-                const SizedBox(height: 8),
-                getImageButtons(),
-                const SizedBox(height: 16),
-                Material(
-                  borderRadius: BorderRadius.circular(10),
-                  elevation: 2.5,
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        amountTextField,
-                        const SizedBox(height: 16),
-                        entryDateField,
-                        const SizedBox(height: 16),
-                        invoiceDateField,
-                      ],
-                    ),
+                Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      ConstrainedBox(
+                        constraints: const BoxConstraints(maxHeight: 250),
+                        child: Material(
+                          clipBehavior: Clip.antiAliasWithSaveLayer,
+                          borderRadius: BorderRadius.circular(20),
+                          elevation: 2.5,
+                          child: image,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      getImageButtons(),
+                      const SizedBox(height: 16),
+                      Material(
+                        borderRadius: BorderRadius.circular(10),
+                        elevation: 2.5,
+                        child: Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              amountTextField,
+                              const SizedBox(height: 16),
+                              entryDateField,
+                              const SizedBox(height: 16),
+                              invoiceDateField,
+                            ],
+                          ),
+                        ),
+                      ),
+                      getBottomButtons(),
+                    ],
                   ),
                 ),
-                getBottomButtons(),
               ],
             ),
           ),
         ),
-      ),
+      ],
     );
   }
 
@@ -214,7 +280,7 @@ class _CarouselCardState extends State<CarouselCard> {
       child: InkWell(
         onTap: () {
           widget.saveCallBack?.call(
-            invoiceAmount: double.tryParse(amountController.text),
+            invoiceAmount: double.tryParse(amountController.text.replaceAll(",", ".")) ?? 0.0,
             invoiceDateTime: invoiceDateTime,
             invoiceImage: invoiceImage,
             entryDateTime: entryDateTime,
@@ -250,10 +316,11 @@ class _CarouselCardState extends State<CarouselCard> {
   }
 
   Widget createTextField(TextEditingController controller, String label, IconData? icon,
-      [bool readOnly = false, Function()? onTap]) {
+      {TextAlign textAlign = TextAlign.left, bool readOnly = false, Function()? onTap, FocusNode? focusNode}) {
     return TextField(
       onTap: onTap,
       controller: controller,
+      focusNode: focusNode,
       decoration: InputDecoration(
         contentPadding: const EdgeInsets.all(12),
         labelText: FlutterUI.translate(label),
@@ -263,7 +330,7 @@ class _CarouselCardState extends State<CarouselCard> {
         isDense: true,
       ),
       readOnly: readOnly,
-      textAlign: TextAlign.left,
+      textAlign: textAlign,
       textAlignVertical: TextAlignVertical.center,
       minLines: 1,
       maxLines: 1,
@@ -282,9 +349,11 @@ class _CarouselCardState extends State<CarouselCard> {
     );
   }
 
-  Widget get amountTextField => createTextField(amountController, "Amount", null);
+  Widget get amountTextField => createTextField(amountController, "Amount", Icons.attach_money,
+      textAlign: TextAlign.right, focusNode: amountFocusNode);
 
-  Widget get entryDateField => createTextField(entryDateController, "Entry Date", Icons.date_range, true, () {
+  Widget get entryDateField =>
+      createTextField(entryDateController, "Entry Date", Icons.date_range, readOnly: true, onTap: () {
         showDatePicker(
           context: context,
           initialDate: entryDateTime ?? DateTime.now(),
@@ -299,7 +368,8 @@ class _CarouselCardState extends State<CarouselCard> {
         });
       });
 
-  Widget get invoiceDateField => createTextField(invoiceDateController, "Invoice Date", Icons.date_range, true, () {
+  Widget get invoiceDateField =>
+      createTextField(invoiceDateController, "Invoice Date", Icons.date_range, readOnly: true, onTap: () {
         showDatePicker(
           context: context,
           initialDate: entryDateTime ?? DateTime.now(),

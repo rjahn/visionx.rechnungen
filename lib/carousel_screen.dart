@@ -49,42 +49,6 @@ class _CarouselScreenState extends State<CarouselScreen> {
     setState(() {});
   }
 
-  Widget _buildCard(BuildContext context, int index, int realIndex) {
-    var dataRow = dataChunk.data[index]!;
-    int? id = dataRow[dataChunk.getColumnIndex("ID")];
-    num? invoiceAmount = dataRow[dataChunk.getColumnIndex("BETRAG")];
-    num? entryDate = dataRow[dataChunk.getColumnIndex("ERFASSUNGSDATUM")];
-    num? invoiceDate = dataRow[dataChunk.getColumnIndex("RECHNUNGSDATUM")];
-    String? invoiceImage = dataRow[dataChunk.getColumnIndex("RECHNUNG")];
-
-    DateTime? entryDateTime;
-    if (entryDate != null) {
-      entryDateTime = DateTime.fromMillisecondsSinceEpoch(entryDate.truncate());
-    }
-    DateTime? invoiceDateTime;
-    if (invoiceDate != null) {
-      invoiceDateTime = DateTime.fromMillisecondsSinceEpoch(invoiceDate.truncate());
-    }
-
-    return CarouselCard(
-      key: id != null ? ValueKey(id) : null,
-      invoiceAmount: invoiceAmount,
-      entryDateTime: entryDateTime,
-      invoiceDateTime: invoiceDateTime,
-      invoiceImage: invoiceImage,
-      saveCallBack: ({entryDateTime, invoiceAmount, invoiceDateTime, invoiceImage}) {
-        saveValues(
-          id: id,
-          entryDateTime: entryDateTime,
-          invoiceImage: invoiceImage,
-          invoiceDateTime: invoiceDateTime,
-          invoiceAmount: invoiceAmount,
-        );
-      },
-      deleteCallBack: () => delete(id),
-    );
-  }
-
   void receiveSelectedRecord(DataRecord? pDataRecord) {
     if (selectedIndex != pDataRecord?.index) {
       selectedIndex = pDataRecord?.index;
@@ -98,27 +62,22 @@ class _CarouselScreenState extends State<CarouselScreen> {
     return Stack(
       children: [
         Positioned.fill(
-          child: DecoratedBox(
-            decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.background,
-            ),
-            child: LayoutBuilder(
-              builder: (context, constraints) {
-                return CarouselSlider.builder(
-                  itemBuilder: _buildCard,
-                  itemCount: dataChunk.data.length,
-                  options: CarouselOptions(
-                    height: double.infinity,
-                    viewportFraction: 0.75,
-                    enableInfiniteScroll: false,
-                    enlargeCenterPage: true,
-                    onPageChanged: (index, _) => sendSelectedRecord(index),
-                    initialPage: 0,
-                  ),
-                  carouselController: carouselController,
-                );
-              },
-            ),
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              return CarouselSlider.builder(
+                itemBuilder: _buildCard,
+                itemCount: dataChunk.data.length,
+                options: CarouselOptions(
+                  height: double.infinity,
+                  viewportFraction: 0.75,
+                  enableInfiniteScroll: false,
+                  enlargeCenterPage: true,
+                  onPageChanged: (index, _) => sendSelectedRecord(index),
+                  initialPage: 0,
+                ),
+                carouselController: carouselController,
+              );
+            },
           ),
         ),
         createFloatingButton(context),
@@ -143,6 +102,44 @@ class _CarouselScreenState extends State<CarouselScreen> {
           Icons.add,
         ),
       ),
+    );
+  }
+
+  Widget _buildCard(BuildContext context, int index, int realIndex) {
+    var dataRow = dataChunk.data[index]!;
+    int? id = dataRow[dataChunk.getColumnIndex("ID")];
+    num? invoiceAmount = dataRow[dataChunk.getColumnIndex("BETRAG")];
+    num? entryDate = dataRow[dataChunk.getColumnIndex("ERFASSUNGSDATUM")];
+    num? invoiceDate = dataRow[dataChunk.getColumnIndex("RECHNUNGSDATUM")];
+    String? invoiceImage = dataRow[dataChunk.getColumnIndex("RECHNUNG")];
+
+    DateTime? entryDateTime;
+    if (entryDate != null) {
+      entryDateTime = DateTime.fromMillisecondsSinceEpoch(entryDate.truncate());
+    }
+    DateTime? invoiceDateTime;
+    if (invoiceDate != null) {
+      invoiceDateTime = DateTime.fromMillisecondsSinceEpoch(invoiceDate.truncate());
+    }
+
+    return CarouselCard(
+      key: id != null ? ValueKey(id) : null,
+      index: index,
+      totalAmount: dataChunk.data.length,
+      invoiceAmount: invoiceAmount,
+      entryDateTime: entryDateTime,
+      invoiceDateTime: invoiceDateTime,
+      invoiceImage: invoiceImage,
+      saveCallBack: ({entryDateTime, invoiceAmount, invoiceDateTime, invoiceImage}) {
+        saveValues(
+          id: id,
+          entryDateTime: entryDateTime,
+          invoiceImage: invoiceImage,
+          invoiceDateTime: invoiceDateTime,
+          invoiceAmount: invoiceAmount,
+        );
+      },
+      deleteCallBack: () => delete(id),
     );
   }
 
