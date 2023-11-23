@@ -103,7 +103,7 @@ class _CarouselCardState extends State<CarouselCard> {
     return Column(
       children: [
         Padding(
-          padding: const EdgeInsets.only(top: 10),
+          padding: const EdgeInsets.only(top: 25),
           child: Material(
             borderRadius: BorderRadius.circular(20),
             color: Theme.of(context).primaryColor,
@@ -115,7 +115,7 @@ class _CarouselCardState extends State<CarouselCard> {
           ),
         ),
         Padding(
-          padding: const EdgeInsets.only(top: 10),
+          padding: const EdgeInsets.only(top: 25),
           child: Material(
             elevation: 5.0,
             borderRadius: BorderRadius.circular(20),
@@ -350,8 +350,8 @@ class _CarouselCardState extends State<CarouselCard> {
     );
   }
 
-  Widget get amountTextField => createTextField(amountController, "Amount", Icons.attach_money,
-      textAlign: TextAlign.right, focusNode: amountFocusNode);
+  Widget get amountTextField =>
+      createTextField(amountController, "Amount", Icons.euro, textAlign: TextAlign.right, focusNode: amountFocusNode);
 
   Widget get entryDateField =>
       createTextField(entryDateController, "Entry Date", Icons.date_range, readOnly: true, onTap: () {
@@ -404,7 +404,9 @@ class _CarouselCardState extends State<CarouselCard> {
   }
 
   void updatePicture() {
-    _image = invoiceImage != null ? Image(image: MemoryImage(base64Decode(invoiceImage!))) : null;
+    _image = invoiceImage != null
+        ? Image(height: 200, fit: BoxFit.fitHeight, image: MemoryImage(base64Decode(invoiceImage!)))
+        : null;
   }
 
   void deleteImage() {
