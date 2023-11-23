@@ -18,7 +18,6 @@ class _CarouselScreenState extends State<CarouselScreen> {
   CarouselController carouselController = CarouselController();
   DataChunk dataChunk = DataChunk.empty();
   int? selectedIndex;
-  List<Widget> dataCards = [];
 
   @override
   void initState() {
@@ -43,7 +42,6 @@ class _CarouselScreenState extends State<CarouselScreen> {
 
   void receiveDataChunk(DataChunk pDataChunk) {
     dataChunk = pDataChunk;
-    dataCards.clear();
 
     updateSelection();
     setState(() {});
