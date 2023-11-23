@@ -1,4 +1,4 @@
-import 'package:carousel_app/carousel_screen.dart';
+import 'package:rechnungen_app/carousel_screen.dart';
 import 'package:flutter_jvx/flutter_jvx.dart';
 
 class CustomAppManager extends AppManager {

@@ -1,4 +1,4 @@
-import 'package:carousel_app/custom_app_manager.dart';
+import 'package:rechnungen_app/custom_app_manager.dart';
 import 'package:flutter_jvx/flutter_jvx.dart';
 
 AppManager get appManager => CustomAppManager();
@@ -17,7 +17,7 @@ void main() {
           PredefinedServerConfig(
             title: "Rechnungen",
             appName: "Rechnungen",
-            baseUrl: Uri(scheme: "http", host: "172.16.0.30", port: 80, path: "/services/mobile"),
+            baseUrl: Uri(scheme: "http", host: "172.16.0.10", port: 8080, path: "/services/mobile"),
             isDefault: true,
             parametersHidden: true,
           )

@@ -1,4 +1,4 @@
-import 'package:carousel_app/carousel_card.dart';
+import 'package:rechnungen_app/carousel_card.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_jvx/flutter_jvx.dart';
