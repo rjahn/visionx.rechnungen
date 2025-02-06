@@ -130,7 +130,7 @@ class _CarouselCardState extends State<CarouselCard> {
                         flex: 20,
                         child: DecoratedBox(
                           decoration: BoxDecoration(
-                            color: Theme.of(context).colorScheme.background,
+                            color: Theme.of(context).colorScheme.surface,
                           ),
                         ),
                       ),

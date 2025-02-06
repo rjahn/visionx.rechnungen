@@ -1,4 +1,4 @@
-package com.example.carousel_app
+package com.example.rechnungen_app
 
 import io.flutter.embedding.android.FlutterActivity
 

@@ -17,11 +17,20 @@ void main() {
           PredefinedServerConfig(
             title: "Rechnungen",
             appName: "Rechnungen",
-            baseUrl: Uri(scheme: "http", host: "10.0.0.1", port: 80, path: "/services/mobile"),
+            baseUrl: Uri(scheme: "http", host: "localhost", port: 80, path: "/services/mobile"),
             isDefault: true,
             parametersHidden: true,
           )
         ],
+        logConfig: const LogConfig(
+          levels: LogLevelConfig(
+            general: Level.error,
+            api: Level.error,
+            command: Level.error,
+            ui: Level.error,
+            layout: Level.error,
+          ),
+        ),
       ),
     ),
   );

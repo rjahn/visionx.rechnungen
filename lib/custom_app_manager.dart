@@ -6,7 +6,7 @@ class CustomAppManager extends AppManager {
   CustomAppManager() {
     registerScreen(
       CustomScreen.online(
-        key: CarouselScreen.SCREEN_KEY,
+        key: CarouselScreen.SCREEN_ID,
         screenBuilder: (buildContext, originalScreen) => const CarouselScreen(),
       ),
     );

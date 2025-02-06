@@ -4,9 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_jvx/flutter_jvx.dart';
 
 class CarouselScreen extends StatefulWidget {
-  static const String SCREEN_KEY =
-      "app.visionx.apps.rechnungen.screens.ErfassungWorkScreen:L1_MI_DOOPENWORKSCREEN_APP-VIS-APP-REC-SCR-ERFWORSCR";
-  static const String DATAPROVIDER_KEY = "Rechnungen/Erf-25/erfassung#0";
+  // ignore: constant_identifier_names
+  static const String SCREEN_ID = "app.visionx.apps.rechnungen.screens.ErfassungWorkScreen:L1_MI_DOOPENWORKSCREEN_APP-VIS-APP-REC-SCR-ERFWORSCR";
+  // ignore: constant_identifier_names
+  static const String DATAPROVIDER_NAME = "Rechnungen/Erf-25/erfassung#0";
 
   const CarouselScreen({super.key});
 
@@ -15,7 +16,7 @@ class CarouselScreen extends StatefulWidget {
 }
 
 class _CarouselScreenState extends State<CarouselScreen> {
-  CarouselController carouselController = CarouselController();
+  CarouselSliderController carouselController = CarouselSliderController();
   DataChunk dataChunk = DataChunk.empty();
   int? selectedIndex;
 
@@ -26,7 +27,7 @@ class _CarouselScreenState extends State<CarouselScreen> {
     IUiService().registerDataSubscription(
       pDataSubscription: DataSubscription(
         subbedObj: this,
-        dataProvider: CarouselScreen.DATAPROVIDER_KEY,
+        dataProvider: CarouselScreen.DATAPROVIDER_NAME,
         onDataChunk: receiveDataChunk,
         onSelectedRecord: receiveSelectedRecord,
         from: 0,
@@ -36,7 +37,7 @@ class _CarouselScreenState extends State<CarouselScreen> {
 
   @override
   void dispose() {
-    IUiService().disposeSubscriptions(pSubscriber: this);
+    IUiService().disposeSubscriptions(this);
     super.dispose();
   }
 
@@ -85,15 +86,15 @@ class _CarouselScreenState extends State<CarouselScreen> {
 
   Positioned createFloatingButton(BuildContext context) {
     return Positioned(
-      right: 25,
-      bottom: 25,
+      right: 15,
+      bottom: 15,
       child: FloatingActionButton(
         heroTag: null,
         backgroundColor: Theme.of(context).colorScheme.primary,
         onPressed: () {
-          IUiService().sendCommand(
+          ICommandService().sendCommand(
             InsertRecordCommand(
-                dataProvider: CarouselScreen.DATAPROVIDER_KEY, reason: "Pressed floating insert button"),
+                dataProvider: CarouselScreen.DATAPROVIDER_NAME, reason: "Pressed floating insert button"),
           );
         },
         child: const Icon(
@@ -105,11 +106,11 @@ class _CarouselScreenState extends State<CarouselScreen> {
 
   Widget _buildCard(BuildContext context, int index, int realIndex) {
     var dataRow = dataChunk.data[index]!;
-    int? id = dataRow[dataChunk.getColumnIndex("ID")];
-    num? invoiceAmount = dataRow[dataChunk.getColumnIndex("BETRAG")];
-    num? entryDate = dataRow[dataChunk.getColumnIndex("ERFASSUNGSDATUM")];
-    num? invoiceDate = dataRow[dataChunk.getColumnIndex("RECHNUNGSDATUM")];
-    String? invoiceImage = dataRow[dataChunk.getColumnIndex("RECHNUNG")];
+    int? id = dataRow[dataChunk.columnDefinitions.indexByName("ID")];
+    num? invoiceAmount = dataRow[dataChunk.columnDefinitions.indexByName("BETRAG")];
+    num? entryDate = dataRow[dataChunk.columnDefinitions.indexByName("ERFASSUNGSDATUM")];
+    num? invoiceDate = dataRow[dataChunk.columnDefinitions.indexByName("RECHNUNGSDATUM")];
+    String? invoiceImage = dataRow[dataChunk.columnDefinitions.indexByName("RECHNUNG")];
 
     DateTime? entryDateTime;
     if (entryDate != null) {
@@ -142,9 +143,9 @@ class _CarouselScreenState extends State<CarouselScreen> {
   }
 
   void delete(int? id) {
-    IUiService().sendCommand(
+    ICommandService().sendCommand(
       DeleteRecordCommand(
-        dataProvider: CarouselScreen.DATAPROVIDER_KEY,
+        dataProvider: CarouselScreen.DATAPROVIDER_NAME,
         filter: id != null
             ? Filter(
                 columnNames: ["ID"],
@@ -163,11 +164,11 @@ class _CarouselScreenState extends State<CarouselScreen> {
     DateTime? invoiceDateTime,
     String? invoiceImage,
   }) {
-    IUiService().sendCommand(
+    ICommandService().sendCommand(
       QueuedFunctionCommand(
         () => [
           SetValuesCommand(
-            dataProvider: CarouselScreen.DATAPROVIDER_KEY,
+            dataProvider: CarouselScreen.DATAPROVIDER_NAME,
             columnNames: ["ERFASSUNGSDATUM", "RECHNUNGSDATUM", "BETRAG", "RECHNUNG"],
             values: [
               entryDateTime?.millisecondsSinceEpoch,
@@ -182,7 +183,7 @@ class _CarouselScreenState extends State<CarouselScreen> {
             reason: "Pressed save",
           ),
           DalSaveCommand(
-            dataProvider: CarouselScreen.DATAPROVIDER_KEY,
+            dataProvider: CarouselScreen.DATAPROVIDER_NAME,
             reason: "Pressed save",
           ),
         ],
@@ -194,11 +195,11 @@ class _CarouselScreenState extends State<CarouselScreen> {
   void sendSelectedRecord(int pIndex) {
     if (dataChunk.data.length > pIndex && pIndex >= 0 && pIndex != selectedIndex) {
       selectedIndex = pIndex;
-      int id = dataChunk.data[pIndex]![dataChunk.getColumnIndex("ID")];
-      IUiService().sendCommand(
+      int id = dataChunk.data[pIndex]![dataChunk.columnDefinitions.indexByName("ID")];
+      ICommandService().sendCommand(
         SelectRecordCommand.select(
           reason: "Scrolled",
-          dataProvider: CarouselScreen.DATAPROVIDER_KEY,
+          dataProvider: CarouselScreen.DATAPROVIDER_NAME,
           filter: Filter(
             columnNames: ["ID"],
             values: [id],
