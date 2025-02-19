@@ -33,7 +33,7 @@
             <key>CFBundleTypeRole</key>
             <string>Editor</string>
             <key>CFBundleURLName</key>
-            <string>com.example.rechnungen_app/string>
+            <string>com.example.rechnungen_app</string>
             <key>CFBundleURLSchemes</key>
             <array>
                 <string>jvx</string>
@@ -63,5 +63,21 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+    <key>UIStatusBarHidden</key>
+    <false/>
+    <key>NSCameraUsageDescription</key>
+    <string>We would like to access your camera in order to be able to scan QR Codes or take pictures for your personal records.</string>
+    <key>NSPhotoLibraryUsageDescription</key>
+    <string>We would like to access your photo library in order to be able to add data to your personal records.</string>
+    <key>NSLocationWhenInUseUsageDescription</key>
+    <string>We would like to access your location in order to be able to add data to your personal records.</string>
+    <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+    <string>We would like to always access your location in order to be able to add data to your personal records.</string>
+    <key>NSSpeechRecognitionUsageDescription</key>
+    <string>We would like to use the speech recognition on your device to be able to add data to your personal records.</string>
+    <key>NSMicrophoneUsageDescription</key>
+    <string>We would like to access your microphone in order to use speech recognition.</string>
+    <key>FlutterDeepLinkingEnabled</key>
+    <true/>
 </dict>
 </plist>
